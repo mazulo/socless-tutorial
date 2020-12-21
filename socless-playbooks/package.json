@@ -1,0 +1,26 @@
+{
+  "name": "socless-playbooks",
+  "version": "1.0.0",
+  "config": {
+    "aws_profile": "default",
+    "dev": "--stage dev --region us-west-2",
+    "prod": "--stage prod --region us-east-1"
+  },
+  "description": "Socless playbooks tutorial",
+  "scripts": {
+    "test": "serverless --version",
+    "dev": "serverless deploy $npm_package_config_dev --aws-profile $npm_package_config_aws_profile --verbose",
+    "prod": "serverless deploy $npm_package_config_prod --aws-profile $npm_package_config_aws_profile --verbose"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serverless": "1.50.0",
+    "serverless-package-python-functions": "^0.6.1",
+    "sls-apb": "git://github.com/twilio-labs/sls-apb.git"
+  },
+  "repository": {},
+  "devDependencies": {},
+  "main": "index.js",
+  "keywords": []
+}
