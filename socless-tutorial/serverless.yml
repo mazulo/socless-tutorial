@@ -1,4 +1,4 @@
-service: socless-integrations-template
+service: socless-tutorial
 
 provider:
   name: aws
@@ -42,7 +42,7 @@ functions:
   GeoIP:
     name: socless_tutorial_geoip
     handler: lambda_function.lambda_handler
-    description: Integration to geolocate an ip
+    description: Integration to geolocate an IP
     package:
       include:
         - functions/geoip
@@ -53,18 +53,31 @@ functions:
     description: Send a message using Slack
     package:
       include:
-        -  functions/send_message
+        - functions/send_message
     environment:
       SOCLESS_BOT_TOKEN: ${{ssm:/socless/slack/bot_token~true}}
+
+  TutorialEndpoint:
+    name: _socless_tutorial_endpoint
+    handler: lambda_function.lambda_handler
+    description: Receives alerts from our tutorial detection system
+    package:
+      include:
+        - functions/tutorial_endpoint
+    events:
+      - http:
+          path: /tutorial
+          method: post
+
 
 resources:
   Outputs:
     GeoIP:
-      Description: ARN of GeoIP integration
+      Description: ARN of GeoIP Integration
       Value:
         Fn::Sub: ${GeoIPLambdaFunction.Arn}
 
     SendMessage:
-      Description: ARN of SendMessage Integration
+      Description: Arn Of SendMessage Integration
       Value:
         Fn::Sub: ${SendMessageLambdaFunction.Arn}

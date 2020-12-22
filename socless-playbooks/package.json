@@ -2,7 +2,7 @@
   "name": "socless-playbooks",
   "version": "1.0.0",
   "config": {
-    "aws_profile": "default",
+    "aws_profile": "testing",
     "dev": "--stage dev --region us-west-2",
     "prod": "--stage prod --region us-east-1"
   },
