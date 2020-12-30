@@ -26,5 +26,12 @@ custom:
     GeoIP: ${{cf:socless-tutorial-${{self:provider.stage}}.GeoIP}}
     SendMessage: ${{cf:socless-tutorial-${{self:provider.stage}}.SendMessage}}
 
+  slack:
+    PromptForConfirmation: ${{cf:socless-slack-${{self:provider.stage}}.PromptForConfirmation}}
+    PromptForResponse: ${{cf:socless-slack-${{self:provider.stage}}.PromptForResponse}}
+    SendMessage: ${{cf:socless-slack-${{self:provider.stage}}.SendMessage}}
+    FindUser: ${{cf:socless-slack-${{self:provider.stage}}.FindUser}}
+    SendDialog: ${{cf:socless-slack-${{self:provider.stage}}.SendDialog}}
+
   playbooks:
     - investigate_login

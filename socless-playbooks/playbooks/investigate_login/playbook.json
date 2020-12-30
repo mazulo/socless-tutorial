@@ -17,9 +17,30 @@
             "Parameters": {
                 "target": "bat-signals",
                 "target_type": "channel",
-                "message_template": "`{context.artifacts.event.details.username}` logged in from `{context.results.Geolocate_IP.country_name}` at coordinates `{context.results.Geolocate_IP.latitude}`, `{context.results.Geolocate_IP.longitude}`"
+                "message_template": "`{context.artifacts.event.details.username}` logged in from `{context.results.Geolocate_IP.country}` at coordinates `{context.results.Geolocate_IP.latitude}`, `{context.results.Geolocate_IP.longitude}`"
+            },
+            "Next": "Verify_Login_With_User"
+        },
+        "Verify_Login_With_User": {
+            "Type": "Interaction",
+            "Resource": "${{self:custom.slack.PromptForConfirmation}}",
+            "Parameters": {
+                "target": "$.artifacts.event.details.username",
+                "target_type": "user",
+                "text": "Hi {context.artifacts.event.details.username}, I noticed that your account was logged into from {context.results.Geolocate_IP.country}",
+                "prompt_text": "Did you login from {context.results.Geolocate_IP.country}?"
+            },
+            "Next": "Post_Update_To_Bat_Signals"
+          },
+          "Post_Update_To_Bat_Signals": {
+            "Type": "Task",
+            "Resource": "${{self:custom.slack.SendMessage}}",
+            "Parameters": {
+              "target": "bat-signals",
+              "target_type": "channel",
+              "message_template": "User, `{context.artifacts.event.details.username}` responded `{context.results.Verify_Login_With_User.actions.value}` to the alert"
             },
             "End": true
-        }
+          }
     }
 }
