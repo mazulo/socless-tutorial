@@ -12,6 +12,7 @@ def find_user(name, page_limit=100, include_locale='false'):
     """
     paginate = True
     next_cursor = ''
+
     while paginate:
         resp = sc.users_list(
             cursor=next_cursor,
@@ -20,12 +21,15 @@ def find_user(name, page_limit=100, include_locale='false'):
         )
         data = resp.data
         next_cursor = resp.data['response_metadata'].get('next_cursor','')
+
         if not next_cursor:
             paginate = False
 
         for user in data['members']:
             user_names = [
-                user.get('name'), user.get('real_name'), user.get('profile',{}).get('real_name')
+                user.get('name'),
+                user.get('real_name'),
+                user.get('profile',{}).get('real_name'),
             ]
             if name in user_names:
                 return {"found": True, "user": user}
