@@ -1,7 +1,7 @@
 {
   "name": "socless-tutorial",
   "config": {
-    "aws_profile": "testing",
+    "aws_profile": "default",
     "dev": "--stage dev --region us-west-2",
     "prod": "--stage prod --region us-west-2"
   },

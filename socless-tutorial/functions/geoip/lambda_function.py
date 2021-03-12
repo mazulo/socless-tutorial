@@ -4,7 +4,14 @@ from socless import socless_bootstrap
 
 
 def handle_state(ip):
-    r = requests.get("https://tools.keycdn.com/geo.json", params={"host": ip})
+    headers = {
+        'User-Agent': "keycdn-tools:https://tools.keycdn.com/"
+    }
+    r = requests.get(
+        "https://tools.keycdn.com/geo.json",
+        params={"host": ip},
+        headers=headers,
+    )
     geoip_info = r.json()['data']['geo']
     desired_results = {
         "country": geoip_info['country_name'],
