@@ -30,17 +30,85 @@
                 "text": "Hi {context.artifacts.event.details.username}, I noticed that your account was logged into from {context.results.Geolocate_IP.country}",
                 "prompt_text": "Did you login from {context.results.Geolocate_IP.country}?"
             },
-            "Next": "Post_Update_To_Bat_Signals"
+            "Next": "Did_User_Login"
           },
-          "Post_Update_To_Bat_Signals": {
+        "Did_User_Login": {
+            "Type": "Choice",
+            "Choices": [
+              {
+                "Variable": "$.results.Verify_Login_With_User.actions.value",
+                "StringEquals": "true",
+                "Next": "Thank_User"
+              },
+              {
+                "Variable": "$.results.Verify_Login_With_User.actions.value",
+                "StringEquals": "false",
+                "Next": "Request_More_Info"
+              }
+            ]
+        },
+        "Thank_User": {
+            "Type": "Task",
+            "Resource": "${{self:custom.slack.SendMessage}}",
+            "Parameters": {
+              "target": "$.artifacts.event.details.username",
+              "target_type": "user",
+              "message_template": "Thanks for the confirmation! I'll let the security team know everything is fine"
+            },
+            "End": true
+        },
+        "Reassure_User": {
+            "Type": "Task",
+            "Resource": "${{self:custom.slack.SendMessage}}",
+            "Parameters": {
+              "target": "$.artifacts.event.details.username",
+              "target_type": "user",
+              "message_template": "Oh oh. Seems like something is amiss here. I'll inform the security team immediately"
+            },
+            "End": true
+        },
+        "Request_More_Info": {
+            "Type": "Interaction",
+            "Resource": "${{self:custom.slack.SendDialog}}",
+            "Parameters": {
+              "trigger_id": "$.results.Verify_Login_With_User.trigger_id",
+              "title": "Tell Us More",
+              "elements": [
+                {
+                  "label": "When was your last login?",
+                  "name": "additional_info",
+                  "optional": false,
+                  "placeholder": "My last log in was at ... from ....",
+                  "type": "text"
+                }
+              ]
+            },
+            "Next": "Did_User_Submit_Dialog"
+        },
+        "Did_User_Submit_Dialog": {
+            "Type": "Choice",
+            "Choices": [
+              {
+                "Variable": "$.results.Request_More_Info.type",
+                "StringEquals": "dialog_submission",
+                "Next": "Reassure_User"
+              },
+              {
+                "Variable": "$.results.Request_More_Info.type",
+                "StringEquals": "dialog_cancellation",
+                "Next": "Update_Bat_Signals_Channel"
+              }
+            ]
+        },
+        "Update_Bat_Signals_Channel": {
             "Type": "Task",
             "Resource": "${{self:custom.slack.SendMessage}}",
             "Parameters": {
               "target": "bat-signals",
               "target_type": "channel",
-              "message_template": "User, `{context.artifacts.event.details.username}` responded `{context.results.Verify_Login_With_User.actions.value}` to the alert"
+              "message_template": "User, {context.artifacts.event.details.username}, reported that they did not log into their account but also failed to provide additional details via the dialog. Please investigate."
             },
             "End": true
-          }
+        }
     }
 }
